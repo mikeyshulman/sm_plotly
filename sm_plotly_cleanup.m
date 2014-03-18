@@ -1,4 +1,4 @@
-function [scan,response] = sm_plotly_cleanup(scan,fname)
+function [scan,response] = sm_plotly_cleanup(scan,fname,varargin)
 %function response = sm_plotly_cleanup(scan,fname)
 % will grab data from figure(1000) and then export it.
 % assumes already working plotly account....
@@ -13,32 +13,34 @@ function [scan,response] = sm_plotly_cleanup(scan,fname)
 
 global plotlydata;
 
-[pdata,kwargs] = fig_to_plotly(1);
+[pdata,kwargs] = fig_to_plotly(1000);
 if isfield(plotlydata,'plots')
-   ignore = setdiff((1:length(pdata)),plotlydata.plots); 
-   pdata(ignore)=[];
-   fn = fieldnames(kwargs);
-   if any(ignore==1)
-       kwargs.layout = rmfield(kwargs.layout,{'xaxis','yaxis'}); 
-   end
-   for j= 1:length(fn)
-      if any(ignore == sscanf(fn{j},'xaxis%d')) || any(ignore == sscanf(fn{j},'yaxis%d'))
-         kwargs.layout = rmfield(kwargs.layout,fn{j}); 
-      end
-   end
-   
+    ignore = setdiff((1:length(pdata)),plotlydata.plots);
+    if ~isempty(ignore)
+        pdata(ignore)=[];
+        fn = fieldnames(kwargs);
+        if any(ignore==1)
+            kwargs.layout = rmfield(kwargs.layout,{'xaxis','yaxis'});
+        end
+        for j= 1:length(fn)
+            if any(ignore == sscanf(fn{j},'xaxis%d')) || any(ignore == sscanf(fn{j},'yaxis%d'))
+                kwargs.layout = rmfield(kwargs.layout,fn{j});
+            end
+        end
+    end
+    
 end
 
 plot_dir = datestr(now,plotlydata.dir_pattern);
 % the next line is sometimes buggy, conside replacing with
-% kwargs.filename = [plot_dir,'/',fname]; 
-kwargs.filename = fullfile(plot_dir,fname);
+ kwargs.filename = [plot_dir,'/',fname]; 
+%kwargs.filename = fullfile(plot_dir,fname);
 fn = fieldnames(plotlydata.kwargs);
 for j = 1:length(fn)
    kwargs.(fn{j}) = plotlydata.kwargs.(fn{j}); 
 end
 
-if any(isnan(scan.data{1}(:))) && ~plotlydata.export_aborted
+if any(strcmp(varargin{:},'aborted')) && ~plotlydata.export_aborted
     response = [];
     return
 end
@@ -52,5 +54,6 @@ if expt
     response = plotly(pdata,kwargs);
 end
 scan.data.plotly_response = response;
+fprintf('exported! \n');
 
 end

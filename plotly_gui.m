@@ -126,6 +126,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % looks through all the fields in the gui, and populates them
 % see sm_plotly_cleanup for all of the allowed fields of plotlydata
 global plotlydata;
+plotlydata.kwargs = struct();
 plotlydata.export_aborted = get(handles.checkbox1,'Value');
 plotlydata.auto_export = get(handles.checkbox2,'Value');
 tmp = get(handles.edit1,'String');
@@ -169,8 +170,7 @@ else
         plotlydata.kwargs = rmfield(plotlydata.kwargs,'fileopt');
     end
 end
-doplots = get(handles.listbox1,'Value');
-plotlydata.plots = doplots;
+
 
 
 function edit2_Callback(hObject, eventdata, handles)
@@ -195,38 +195,38 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on selection change in listbox1.
-function listbox1_Callback(hObject, eventdata, handles)
-% hObject    handle to listbox1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from listbox1
-
-
-% --- Executes during object creation, after setting all properties.
-function listbox1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to listbox1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-global smscan;
-if ~isempty(smscan) && ~isempty(smscan.disp)
-   dd = cell(length(smscan.disp),1);
-   for j = 1:length(dd)
-      dd{j} = sprintf('disp %i>> \t loop: %i, channel: %i, dim %i',...
-          j,smscan.disp(j).loop,smscan.disp(j).channel, smscan.disp(j).dim); 
-   end
-   set(hObject,'String',dd);
-   set(hObject,'Max',length(dd));
-   set(hObject,'Min',0);
-else
-    set(hObject,'String','cannot find smscan. is it global?');
-end
+% % --- Executes on selection change in listbox1.
+% function listbox1_Callback(hObject, eventdata, handles)
+% % hObject    handle to listbox1 (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% % Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
+% %        contents{get(hObject,'Value')} returns selected item from listbox1
+% 
+% 
+% % --- Executes during object creation, after setting all properties.
+% function listbox1_CreateFcn(hObject, eventdata, handles)
+% % hObject    handle to listbox1 (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    empty - handles not created until after all CreateFcns called
+% 
+% % Hint: listbox controls usually have a white background on Windows.
+% %       See ISPC and COMPUTER.
+% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+%     set(hObject,'BackgroundColor','white');
+% end
+% 
+% global smscan;
+% if ~isempty(smscan) && ~isempty(smscan.disp)
+%    dd = cell(length(smscan.disp),1);
+%    for j = 1:length(dd)
+%       dd{j} = sprintf('disp %i>> \t loop: %i, channel: %i, dim %i',...
+%           j,smscan.disp(j).loop,smscan.disp(j).channel, smscan.disp(j).dim); 
+%    end
+%    set(hObject,'String',dd);
+%    set(hObject,'Max',length(dd));
+%    set(hObject,'Min',0);
+% else
+%     set(hObject,'String','cannot find smscan. is it global?');
+% end

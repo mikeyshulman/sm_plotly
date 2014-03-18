@@ -6,7 +6,7 @@ function [data, kwargs] = fig_to_plotly(fignum)
 %   this will force all subplots to be in one row, even if they aren't
 %   works on single figures only (can havbe subplots);
 %   will delete legends
-if isempty(fignum)
+if ~exist('fignum','var') || isempty(fignum)
     fignum = gcf;
 end
 if length(fignum)>1
@@ -76,7 +76,9 @@ for j= 1:length(out)
     end
 end
 layout.showlegend = false;
-layout.title = title_strings{1};
+if ~isempty(title_strings)
+    layout.title = title_strings{1};
+end
 data = out; %they come out backwards
 kwargs.layout=layout;
 
